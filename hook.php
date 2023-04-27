@@ -33,6 +33,11 @@
 function plugin_whitelabel_install() {
     global $DB;
 
+    if (!is_writable(__DIR__ . "/uploads") || !is_writable(__DIR__ . "/bak")){
+        Session::addMessageAfterRedirect(__('<p><b>Error</b></p><p><i>Make sure the plugin folder has good rights !</i></p>', 'whitelabel'));
+        return false;
+    }
+
     $migration = new Migration(101);
 
     if (!$DB->tableExists("glpi_plugin_whitelabel_brand")) {
