@@ -140,3 +140,7 @@ msgstr "Importez votre configuration CSS (%s)"
 #: inc/config.class.php:202
 msgid "Restore colors"
 msgstr "Restaurer les couleurs"
+
+#: hook.php:37
+msgid "<p><b>Error</b></p><p><i>Make sure the plugin folder has good rights !</i></p>"
+msgstr "<p><b>Erreur</b></p><p><i>Vérifier les droits sur le dossier du plugin !</i></p>"
