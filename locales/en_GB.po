@@ -140,3 +140,7 @@ msgstr ""
 #: inc/config.class.php:202
 msgid "Restore colors"
 msgstr ""
+
+#: hook.php:37
+msgid "<p><b>Error</b></p><p><i>Please, set Apache rights on the plugin folder.</i></p>"
+msgstr ""
