@@ -142,5 +142,5 @@ msgid "Restore colors"
 msgstr ""
 
 #: hook.php:37
-msgid "<p><b>Error</b></p><p><i>Make sure the plugin folder has good rights !</i></p>"
+msgid "<p><b>Error</b></p><p><i>Please, set Apache rights on the plugin folder.</i></p>"
 msgstr ""
