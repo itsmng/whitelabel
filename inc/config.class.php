@@ -38,15 +38,10 @@ class PluginWhitelabelConfig extends CommonDBTM {
      * @return void
      */
     public function showConfigForm() {
-        global $DB;
-
         if (!Session::haveRight("plugin_whitelabel_whitelabel",UPDATE)) {
             return false;
         }
-        require_once GLPI_ROOT . "/ng/twig.class.php";        
-        $template_dir[] = GLPI_ROOT . "/templates";
-        $template_dir[] = Plugin::getPhpDir("whitelabel")."/templates";
-        $twig = Twig::load($template_dir, false);      
+
         $colors = $this->getThemeColors();
         $field_labels = [
             'primary_color' => __('Primary Color'),
@@ -61,47 +56,66 @@ class PluginWhitelabelConfig extends CommonDBTM {
             'nav_hover_color' => __('Nav Hover Color'),
             'favorite_color' => __('Favorite Color'),
         ];
-        //define all the form's fields
-        foreach ($colors as $name=>$color){
-            $fields[$name]=["TYPE" => "color","LBL" => $field_labels[$name], "VALUE" => $color];
-        }
-        $fields += [
-            "favicon"=>[
-                "TYPE" => "file",
-                "LBL"=>sprintf(__('Favicon (%s)', 'whitelabel'), Document::getMaxUploadSize()),
-                "ACCEPT" => ".ico"
+
+        $form = [
+            'action' => Plugin::getWebDir("whitelabel")."/front/config.form.php",
+            'buttons' => [
+                [
+                    'name' => 'update',
+                    'type' => 'submit',
+                    'value' => __('Save'),
+                    'class' => 'btn btn-secondary'
+                ],
+                [
+                    'name' => 'reset',
+                    'type' => 'submit',
+                    'value' => __('Reset'),
+                    'class' => 'btn btn-secondary'
+                ]
             ],
-            "logo_central"=>[
-                "TYPE" => "file",
-                "LBL"=>sprintf(__('Logo (%s)', 'whitelabel'), Document::getMaxUploadSize()),
-                "ACCEPT" => ".png"
-            ],
-            "css_configuration"=>[
-                "TYPE" => "file",
-                "LBL"=>sprintf(__('Import your CSS configuration (%s)', 'whitelabel'), Document::getMaxUploadSize()),
-                "ACCEPT" => ".css"]
+            'content' => [
+                __('Colors') => [
+                    'visible' => true,
+                    'inputs' => []
+                ],
+                __('Files') => [
+                    'visible' => true,
+                    'inputs' => [
+                        sprintf(__('Favicon (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
+                            'id' => 'FavoriteIconFilePicker',
+                            'name' => 'favicon',
+                            'type' => 'file',
+                            'value' => '',
+                            'accept' => '.ico'
+                        ],
+                        sprintf(__('Logo (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
+                            'id' => 'LogoFilePicker',
+                            'name' => 'logo_central',
+                            'type' => 'file',
+                            'value' => '',
+                            'accept' => '.png'
+                        ],
+                        sprintf(__('Import your CSS configuration (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
+                            'id' => 'CssFilePicker',
+                            'name' => 'css_configuration',
+                            'type' => 'file',
+                            'value' => '',
+                            'accept' => '.css'
+                        ],
+                    ]
+                ]
+            ]
         ];
-        foreach ($fields as $k=>$v){
-            //translate the lbl
-            if ($v['TYPE'] == "color")
-            $fields_update[$k]=array(["VALUE"=>$k,"TYPE"=>"id"],["VALUE"=>__($v['LBL'], 'whitelabel'),"TYPE"=>"lbl"],["VALUE"=>$colors[$k],"TYPE"=>$v["TYPE"],"NAME"=>$k]);
-            //file fields
-            elseif ($v['TYPE'] == "file"){
-                $sql_whitelabel_band = new table_glpi_plugin_whitelabel_brand();
-                $value = $sql_whitelabel_band->select($k);
-                if ($value[$k] == "" && isset($colors[$k]))
-                $fields_update[$k]=array(["VALUE"=>$k,"TYPE"=>"id"],["VALUE"=>$v['LBL'],"TYPE"=>"lbl"],["VALUE"=>$colors[$k],"TYPE"=>$v["TYPE"],"NAME"=>$k,"VALUE_ACCEPT"=>$v['ACCEPT']]);
-                else
-                $fields_update[$k]=array(["VALUE"=>$k,"TYPE"=>"id"],["VALUE"=>$v['LBL'],"TYPE"=>'lbl'],["VALUE"=>Plugin::getWebDir("plugin_whitelabel_whitelabel")."/plugins/whitelabel/uploads/".$value[$k],"TYPE"=>"img"]);
-            }
-            // $fields_update[$k][]=array("TYPE"=>'checkbox',"NAME"=>'checkbox_'.$k,"VALUE"=>$k);
+        foreach ($field_labels as $name => $title) {
+            $form['content'][__('Colors')]['inputs'][$title] = [
+                'name' => $name,
+                'type' => 'color',
+                'value' => $colors[$name],
+                'col_lg' => 3,
+                'col_md' => 4,
+            ];
         }
-        //print_r( $fields_update);
-        try {
-            echo $twig->render('config.class.twig',  ['fields_update' => $fields_update,'csrf' => Session::getNewCSRFToken()]);   
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
+        renderTwigForm($form);
     }
 
      /**
@@ -134,17 +148,13 @@ class PluginWhitelabelConfig extends CommonDBTM {
         $sql = new table_glpi_plugin_whitelabel_brand();
 
         if ($reset) {
-            if ($_POST['selected_rows'] != "") {
-                $toReplace= explode(',',$_POST['selected_rows']);
-                foreach ($toReplace as $v){
-                    $value = $default_value_css->value_key($v);
-                    if ($value != false)
-                        $data[$v]=$value;
-                }
-                if (isset($data)) {
-                    $sql -> update($data);
-                }
+            foreach ($default_value_css->all_value() as $k=>$v){
+                $data[$k]=$v;
             }
+            $sql -> update($data);
+            $this->handleClear("favicon");
+            $this->handleClear("logo_central");
+            $this->handleClear("css_configuration");
         } else {
             $fields = $default_value_css->all_value();
             foreach($fields as $key => $val){
@@ -169,12 +179,9 @@ class PluginWhitelabelConfig extends CommonDBTM {
             Session::addMessageAfterRedirect("<font color=red><b>".$message."</b></font>", 'whitelabel');
         }
 
-        if ($this->handleClear("favicon")) {
+        if (file_exists(Plugin::getPhpDir("whitelabel")."/bak/favicon.ico.bak")) {
             copy(Plugin::getPhpDir("whitelabel")."/bak/favicon.ico.bak", GLPI_ROOT."/pics/favicon.ico");
         }
-
-        $this->handleClear("logo_central");
-        $this->handleClear("css_configuration");
 
         if(file_exists(Plugin::getPhpDir("whitelabel")."/uploads/favicon.ico")) {
             copy(Plugin::getPhpDir("whitelabel")."/uploads/favicon.ico", GLPI_ROOT."/pics/favicon.ico");
@@ -232,7 +239,7 @@ class PluginWhitelabelConfig extends CommonDBTM {
      */
     private function handleFile(string $file, array $formats) {
 
-        if(empty($_FILES[$file])) {
+        if(empty($_FILES[$file]) || !isset($_FILES[$file])) {
             return;
         }
 
@@ -305,19 +312,17 @@ class PluginWhitelabelConfig extends CommonDBTM {
 
     private function handleClear(string $field) {
         //if checkbox selected to delete file
-        if (in_array($field, explode(',',$_POST["selected_rows"]))) {
-            $sql = new table_glpi_plugin_whitelabel_brand();
-            //check this file exist
-            $row=$sql-> select($field);   
-            if (isset($row[$field])){
-                //unlink file
-                if (isset($row[$field]) && $row[$field] != "" && file_exists(Plugin::getPhpDir("whitelabel")."/uploads/".$row[$field]))
-                    unlink(Plugin::getPhpDir("whitelabel")."/uploads/".$row[$field]);
-                //update table
-                $sql-> update(array($field=>''));  
-                return true; 
-            }            
-        }
+        $sql = new table_glpi_plugin_whitelabel_brand();
+        //check this file exist
+        $row=$sql-> select($field);   
+        if (isset($row[$field])){
+            //unlink file
+            if (isset($row[$field]) && $row[$field] != "" && file_exists(Plugin::getPhpDir("whitelabel")."/uploads/".$row[$field]))
+                unlink(Plugin::getPhpDir("whitelabel")."/uploads/".$row[$field]);
+            //update table
+            $sql-> update(array($field=>''));  
+            return true; 
+        }            
         return false;
     }
 }

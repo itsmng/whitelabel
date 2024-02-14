@@ -122,15 +122,15 @@ class plugin_whitelabel_const
      * Define default values
      */
     const COLORS_DEFAULT = [
-        'primary_color' => '#7b081d',
-        'secondary_color' => '#ae0c2a',
+        'primary_color' => '#0b0624',
+        'secondary_color' => '#0e2045',
         'primary_text_color' => '#ffffff',
         'secondary_text_color' => '#000000',
-        'header_background_color' => '#7b081d',
+        'header_background_color' => '#0b0624',
         'header_text_color' => '#ffffff',
-        'nav_background_color' => '#ae0c2a',
+        'nav_background_color' => '#0e2045',
         'nav_text_color' => '#ffffff',
-        'nav_submenu_color' => '#7b081d',
+        'nav_submenu_color' => '#0b0624',
         'nav_hover_color' => '#ffffff',
         'favorite_color' => '#ffff00',
     ];
