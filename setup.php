@@ -71,6 +71,10 @@ function plugin_whitelabel_check_prerequisites() {
         echo "The directory " . Plugin::getPhpDir('whitelabel') . "/bak must be writable";
         return false;
     }
+    if (!is_writable(GLPI_ROOT . 'index.php')) {
+        echo "The file " . GLPI_ROOT . '/index.php' . " must be writable";
+        return false;
+    }
     return true;
 }
 
