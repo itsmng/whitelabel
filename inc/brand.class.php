@@ -79,9 +79,9 @@ class PluginWhitelabelBrand extends CommonDBTM {
             }
             if (isset($input[$k])) {
                 $input[$k] = json_decode(stripslashes($input[$k]), true)[0];
-                $path = ItsmngUploadHandler::uploadFile(
+                $path = Plugin::getPhpDir('whitelabel') . '/uploads/' . ItsmngUploadHandler::uploadFile(
                     $input[$k]['path'], $input[$k]['name'],
-                    Plugin::getPhpDir('whitelabel') . '/uploads',
+                    Plugin::getPhpDir('whitelabel') . '/uploads/',
                     $k);
                 $input[$k] = str_replace(GLPI_ROOT, '', $path);
                 if ($k == 'favicon') {
