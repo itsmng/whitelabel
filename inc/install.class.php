@@ -176,6 +176,16 @@ class PluginWhitelabelInstall {
 
         switch ($version) {
             case '2.2.0':
+                copy(Plugin::getPhpDir("whitelabel")."/bak/index.php.bak", GLPI_ROOT."/index.php");
+                $loginPage = file_get_contents(GLPI_ROOT."/index.php");
+                $patchMap = [
+                    "Html::scss('css/itsm2.scss')," =>
+                    "Html::scss('css/itsm2.scss'), Html::css('". Plugin::getWebDir("whitelabel", false)."/uploads/whitelabel.css'),",
+                    "login_logo_itsm.png" => "login_logo_whitelabel.png"
+                ];
+                $patchedLogin = strtr($loginPage, $patchMap);
+                file_put_contents(GLPI_ROOT."/index.php", $patchedLogin);
+
                 $colors = PluginWhitelabelBrand::COLORS_DEFAULT;
                 $addedFields = [
                     'menu_text_color' => 'header_text',
