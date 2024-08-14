@@ -78,12 +78,6 @@ class PluginWhitelabelInstall {
             }
         }
 
-        // Create backup of resources that will be altered
-        if (!file_exists(Plugin::getPhpDir("whitelabel")."/bak/custom.scss.bak")) {
-            $pluginPath = Plugin::getPhpDir("whitelabel");
-            copy(GLPI_ROOT . "/pics/favicon.ico", $pluginPath . "/bak/favicon.ico.bak");
-        }
-
         // Update 2.0
         if($DB->tableExists("glpi_plugin_whitelabel_brand")) {
 
@@ -100,6 +94,23 @@ class PluginWhitelabelInstall {
         }
 
         $migration->executeMigration();
+
+        // Create backup of resources that will be altered
+        if (!file_exists(Plugin::getPhpDir("whitelabel")."/bak/index.php.bak")) {
+            $pluginPath = Plugin::getPhpDir("whitelabel");
+            copy(GLPI_ROOT . "/pics/favicon.ico", $pluginPath . "/bak/favicon.ico.bak");
+            copy(GLPI_ROOT."/index.php", Plugin::getPhpDir("whitelabel")."/bak/index.php.bak");
+        }
+
+        $loginPage = file_get_contents(GLPI_ROOT."/index.php");
+        $patchMap = [
+            "Html::scss('css/itsm2.scss')," =>
+            "Html::scss('css/itsm2.scss'), Html::css('". Plugin::getWebDir("whitelabel", false)."/uploads/whitelabel.css'),",
+            "login_logo_itsm.png" => "login_logo_whitelabel.png"
+        ];
+        $patchedLogin = strtr($loginPage, $patchMap);
+        file_put_contents(GLPI_ROOT."/index.php", $patchedLogin);
+
         return true;
     }
 
@@ -133,8 +144,8 @@ class PluginWhitelabelInstall {
         }
 
         // Clear patches
-        if (is_file(Plugin::getPhpDir("whitelabel")."/bak/custom.scss.bak")) {
-            copy(Plugin::getPhpDir("whitelabel")."/bak/custom.scss.bak", GLPI_ROOT."/css/custom.scss");
+        if (is_file(Plugin::getPhpDir("whitelabel")."/bak/bak.php.bak")) {
+            copy(Plugin::getPhpDir("whitelabel")."/bak/index.php.bak", GLPI_ROOT."/index.php");
             copy(Plugin::getPhpDir("whitelabel")."/bak/favicon.ico.bak", GLPI_ROOT."/pics/favicon.ico");
         }
 
