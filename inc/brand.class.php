@@ -79,9 +79,9 @@ class PluginWhitelabelBrand extends CommonDBTM {
             }
             if (isset($input[$k])) {
                 $input[$k] = json_decode(stripslashes($input[$k]), true)[0];
-                $path = ItsmngUploadHandler::uploadFile(
+                $path = Plugin::getPhpDir('whitelabel') . '/uploads/' . ItsmngUploadHandler::uploadFile(
                     $input[$k]['path'], $input[$k]['name'],
-                    Plugin::getPhpDir('whitelabel') . '/uploads',
+                    Plugin::getPhpDir('whitelabel') . '/uploads/',
                     $k);
                 $input[$k] = str_replace(GLPI_ROOT, '', $path);
                 if ($k == 'favicon') {
@@ -96,9 +96,7 @@ class PluginWhitelabelBrand extends CommonDBTM {
 
     function post_updateItem($history = 1) {
         $pluginPath = Plugin::getPhpDir('whitelabel');
-        $this->generateMainTemplate($pluginPath . '/uploads/whitelabel.scss');
-        $this->generateTemplate($pluginPath . '/styles/login_template.scss',
-            $pluginPath . '/uploads/login_whitelabel.scss');
+        $this->generateMainTemplate($pluginPath . '/uploads/whitelabel.css');
     }
 
     function getVersion() {
@@ -158,17 +156,4 @@ class PluginWhitelabelBrand extends CommonDBTM {
         $content .= "}\n";
         file_put_contents($target, $content);
     }
-
-    private function generateTemplate($template, $target) {
-        $colors = $this->getColors();
-        $files = $this->getFiles();
-        $template = file_get_contents($template);
-        $map = [];
-        foreach (array_merge($colors, $files) as $k => $v) {
-            $map['%' . $k . '%'] = $v;
-        }
-        $content = str_replace(array_keys($map), array_values($map), $template);
-        file_put_contents($target, $content);
-    }
-
 }

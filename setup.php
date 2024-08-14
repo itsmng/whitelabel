@@ -45,7 +45,7 @@ function plugin_init_whitelabel() {
     }
 
     $PLUGIN_HOOKS['add_css']['whitelabel'] = [
-        "uploads/whitelabel.scss",
+        "uploads/whitelabel.css",
         "uploads/css_configuration.css",
     ];
 }
@@ -69,6 +69,10 @@ function plugin_whitelabel_check_prerequisites() {
     // check rights on ./bak directory
     if (!is_writable(Plugin::getPhpDir('whitelabel') . '/bak')) {
         echo "The directory " . Plugin::getPhpDir('whitelabel') . "/bak must be writable";
+        return false;
+    }
+    if (!is_writable(GLPI_ROOT . 'index.php')) {
+        echo "The file " . GLPI_ROOT . '/index.php' . " must be writable";
         return false;
     }
     return true;

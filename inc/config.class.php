@@ -36,6 +36,8 @@ class PluginWhitelabelConfig extends CommonDBTM {
      * @return void
      */
     public function showConfigForm() {
+        global $CFG_GLPI;
+
         if (!Session::haveRight("plugin_whitelabel_whitelabel",UPDATE)) {
             return false;
         }
@@ -84,17 +86,17 @@ class PluginWhitelabelConfig extends CommonDBTM {
                             'id' => 'FavoriteIconFilePicker',
                             'name' => 'favicon',
                             'type' => 'imageUpload',
-                            'value' => '',
+                            'value' => $colors['favicon'],
+                            'external' => true,
                             'accept' => '.ico',
-                            'external' => true
                         ],
                         sprintf(__('Logo (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
                             'id' => 'LogoFilePicker',
                             'name' => 'logo_file',
                             'type' => 'imageUpload',
                             'value' => $colors['logo_file'],
+                            'external' => true,
                             'accept' => '.png',
-                            'external' => true
                         ],
                         sprintf(__('Import your CSS configuration (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
                             'id' => 'CssFilePicker',
