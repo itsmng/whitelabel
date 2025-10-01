@@ -64,28 +64,46 @@ class PluginWhitelabelBrand extends CommonDBTM {
             if (!isset($input[$k]) && !isset($input['_blank_' . $k])) {
                 continue;
             }
-            $filepath = GLPI_ROOT . $this->fields[$k];
-            $delete = false;
+            $delete = false;    
             if ($this->fields[$k] != '' && (
                   isset($input['_blank_' . $k]) ||
                   (isset($input[$k]) && $input[$k] == ''))
             ) {
+            $filepath = GLPI_ROOT . $this->fields[$k];
+            if (file_exists($filepath) && is_file($filepath)) {
                 unlink($filepath);
+            }
                 $delete = true;
                 if ($k == 'favicon') {
-                    copy(Plugin::getPhpDir('whitelabel') . '/bak/favicon.ico.bak',
-                        GLPI_ROOT . '/pics/favicon.ico');
+                    $bakFile = Plugin::getPhpDir('whitelabel') . '/bak/favicon.ico.bak';
+                    if (file_exists($bakFile)) {
+                        copy($bakFile, GLPI_ROOT . '/pics/favicon.ico');
+                    }
                 }
-            }
-            if (isset($input[$k])) {
+           }
+        
+            if (isset($input[$k]) && $input[$k] != '') {
                 $input[$k] = json_decode(stripslashes($input[$k]), true)[0];
-                $path = Plugin::getPhpDir('whitelabel') . '/uploads/' . ItsmngUploadHandler::uploadFile(
-                    $input[$k]['path'], $input[$k]['name'],
+
+                $uploadedPath = ItsmngUploadHandler::uploadFile(
+                    $input[$k]['path'], 
+                    $input[$k]['name'],
                     Plugin::getPhpDir('whitelabel') . '/uploads/',
-                    $k);
-                $input[$k] = str_replace(GLPI_ROOT, '', $path);
-                if ($k == 'favicon') {
-                    copy($path, GLPI_ROOT . '/pics/favicon.ico');
+                    $k
+                );
+            
+                $filename = basename($uploadedPath);
+            
+                $input[$k] = '/plugins/whitelabel/uploads/' . $filename;
+            
+                $fullPath = GLPI_ROOT . $input[$k];
+            
+                if ($k == 'favicon' && file_exists($fullPath)) {
+                    copy($fullPath, GLPI_ROOT . '/pics/favicon.ico');
+                }
+            
+                if ($k == 'logo_file' && file_exists($fullPath)) {
+                    copy($fullPath, GLPI_ROOT . '/pics/login_logo_whitelabel.png');
                 }
             } else if ($delete) {
                 $input[$k] = '';

@@ -30,47 +30,47 @@ msgid "Whitelabel Settings"
 msgstr "Configuration de Whitelabel"
 
 #: inc/config.class.php:47
-msgid "Primary color"
+msgid "Primary Color"
 msgstr "Couleur principale"
 
 #: inc/config.class.php:48
-msgid "Secondary color"
+msgid "Secondary Color"
 msgstr "Couleur secondaire"
 
 #: inc/config.class.php:49
-msgid "Primary text color"
+msgid "Primary Text Color"
 msgstr "Couleur principale du texte"
 
 #: inc/config.class.php:50
-msgid "Secondary text color"
+msgid "Secondary Text Color"
 msgstr "couleur secondaire du texte"
 
 #: inc/config.class.php:51
-msgid "Header background color"
+msgid "Header Background Color"
 msgstr "couleur de l'en-tête"
 
 #: inc/config.class.php:52
-msgid "Header text color"
+msgid "Header Text Color"
 msgstr "Couleur du texte de l'en-tête"
 
 #: inc/config.class.php:53
-msgid "Nav background color"
+msgid "Nav Background Color"
 msgstr "couleur de fond de la barre de navigation"
 
 #: inc/config.class.php:54
-msgid "Nav text color"
+msgid "Nav Text Color"
 msgstr "Couleur du texte de la barre de navigation"
 
 #: inc/config.class.php:55
-msgid "Nav submenu color"
+msgid "Nav Submenu Color"
 msgstr "Couleur du sous-menu de la barre de navigation"
 
 #: inc/config.class.php:56
-msgid "Nav hover color"
+msgid "Nav Hover Color"
 msgstr "Couleur du survol de la barre de navigation"
 
 #: inc/config.class.php:57
-msgid "Favorite color"
+msgid "Favorite Color"
 msgstr "Couleur des favoris"
 
 #: inc/config.class.php:197
@@ -80,3 +80,6 @@ msgstr "Importez votre configuration CSS (%s)"
 #: inc/config.class.php:202
 msgid "Restore colors"
 msgstr "Restaurer les couleurs"
+
+msgid "Files"
+msgstr "Fichiers"
