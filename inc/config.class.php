@@ -45,17 +45,17 @@ class PluginWhitelabelConfig extends CommonDBTM {
         $brand = new PluginWhitelabelBrand();
         $colors = $brand->getTheme();
         $field_labels = [
-            'primary' => __('Primary Color'),
-            'secondary' => __('Secondary Color'),
-            'primary_text' => __('Primary Text Color'),
-            'secondary_text' => __('Secondary Text Color'),
-            'header' => __('Header Background Color'),
-            'header_text' => __('Header Text Color'),
-            'nav' => __('Nav Background Color'),
-            'nav_text' => __('Nav Text Color'),
-            'nav_submenu' => __('Nav Submenu Color'),
-            'nav_hover' => __('Nav Hover Color'),
-            'favorite' => __('Favorite Color'),
+            'primary' => __('Primary Color', 'whitelabel'),
+            'secondary' => __('Secondary Color', 'whitelabel'),
+            'primary_text' => __('Primary Text Color', 'whitelabel'),
+            'secondary_text' => __('Secondary Text Color', 'whitelabel'),
+            'header' => __('Header Background Color', 'whitelabel'),
+            'header_text' => __('Header Text Color', 'whitelabel'),
+            'nav' => __('Nav Background Color', 'whitelabel'),
+            'nav_text' => __('Nav Text Color', 'whitelabel'),
+            'nav_submenu' => __('Nav Submenu Color', 'whitelabel'),
+            'nav_hover' => __('Nav Hover Color', 'whitelabel'),
+            'favorite' => __('Favorite Color', 'whitelabel'),
         ];
 
         $form = [
@@ -75,11 +75,11 @@ class PluginWhitelabelConfig extends CommonDBTM {
                 ]
             ],
             'content' => [
-                __('Colors') => [
+                __('Colors', 'whitelabel') => [
                     'visible' => true,
                     'inputs' => []
                 ],
-                __('Files') => [
+                __('Files', 'whitelabel') => [
                     'visible' => true,
                     'inputs' => [
                         sprintf(__('Favicon (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
@@ -110,7 +110,7 @@ class PluginWhitelabelConfig extends CommonDBTM {
             ]
         ];
         foreach ($field_labels as $name => $title) {
-            $form['content'][__('Colors')]['inputs'][$title] = [
+            $form['content'][__('Colors', 'whitelabel')]['inputs'][$title] = [
                 'name' => $name,
                 'type' => 'color',
                 'value' => $colors[$name],
