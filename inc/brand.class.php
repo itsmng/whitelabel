@@ -41,6 +41,7 @@ class PluginWhitelabelBrand extends CommonDBTM {
         'nav' => '#0e2045',
         'nav_text' => '#ffffff',
         'nav_submenu' => '#0b0624',
+        'nav_submenu_text' => '#ffffff',
         'nav_hover' => '#ffffff',
         'favorite' => '#ffff00',
     ];
@@ -171,7 +172,34 @@ class PluginWhitelabelBrand extends CommonDBTM {
                     . $CFG_GLPI['root_doc'] . $v . "');\n";
             }
         }
+        $content .= "}\n\n";
+        
+        $content .= "/* Styles pour le texte du sous-menu */\n";
+        $content .= "nav#menu .menu-content ul.sub-menu li a {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
+        $content .= "}\n\n";
+        
+        $content .= "nav#menu .menu-content ul.sub-menu li a i {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
+        $content .= "}\n\n";
+        
+        $content .= "nav#menu .menu-content ul.sub-menu li a span {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
+        $content .= "}\n\n";
+        
+        $content .= "nav#menu .menu-content ul.sub-menu li:hover a,\n";
+        $content .= "nav#menu .menu-content ul.sub-menu li.active a {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
+        $content .= "}\n\n";
+        
+        $content .= ".menu-top nav#menu .menu-content ul.sub-menu li a {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
+        $content .= "}\n\n";
+        
+        $content .= ".menu-close nav#menu .menu-content ul.sub-menu li a i {\n";
+        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n";
+        
         file_put_contents($target, $content);
     }
 }

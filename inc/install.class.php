@@ -205,6 +205,13 @@ class PluginWhitelabelInstall {
                 $migration->addField($table, 'favorite',
                     "varchar(7) COLLATE utf8_unicode_ci NOT NULL DEFAULT '"
                     . $colors['favorite']."'");
+                
+                if (!$DB->fieldExists($table, 'nav_submenu_text')) {
+                    $migration->addField($table, 'nav_submenu_text',
+                        "varchar(7) COLLATE utf8_unicode_ci NOT NULL DEFAULT '"
+                        . $colors['nav_submenu_text']."'");
+                }
+                
                 $changedFields = [
                     'header_icons_color' => 'primary_text',
                     'menu_color' => 'secondary',
@@ -235,9 +242,21 @@ class PluginWhitelabelInstall {
                 $DB->queryOrDie("ALTER TABLE `". $table
                     . "` CHANGE `logo_central` `logo_file` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT ''");
                 $DB->queryOrDie("UPDATE `" . $table
-                    . "` SET `version` = '3.0.0' WHERE `id` = 1");
+                    . "` SET `version` = '3.0.1' WHERE `id` = 1");
 
                 $migration->executeMigration();
+                break;
+                
+            case '3.0.0':
+                $colors = PluginWhitelabelBrand::COLORS_DEFAULT;
+                if (!$DB->fieldExists($table, 'nav_submenu_text')) {
+                    $migration->addField($table, 'nav_submenu_text',
+                        "varchar(7) COLLATE utf8_unicode_ci NOT NULL DEFAULT '"
+                        . $colors['nav_submenu_text']."'");
+                    $DB->queryOrDie("UPDATE `" . $table
+                        . "` SET `version` = '3.0.1' WHERE `id` = 1");
+                    $migration->executeMigration();
+                }
                 break;
         }
         return true;
