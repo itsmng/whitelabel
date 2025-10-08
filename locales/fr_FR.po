@@ -61,6 +61,10 @@ msgid "Nav Submenu Color"
 msgstr "Couleur du sous-menu de la barre de navigation"
 
 #: inc/config.class.php
+msgid "Nav Submenu Text Color"
+msgstr "Couleur du texte du sous-menu"
+
+#: inc/config.class.php
 msgid "Nav Hover Color"
 msgstr "Couleur du survol de la barre de navigation"
 

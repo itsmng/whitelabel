@@ -54,6 +54,7 @@ class PluginWhitelabelConfig extends CommonDBTM {
             'nav' => __('Nav Background Color', 'whitelabel'),
             'nav_text' => __('Nav Text Color', 'whitelabel'),
             'nav_submenu' => __('Nav Submenu Color', 'whitelabel'),
+            'nav_submenu_text' => __('Nav Submenu Text Color', 'whitelabel'),
             'nav_hover' => __('Nav Hover Color', 'whitelabel'),
             'favorite' => __('Favorite Color', 'whitelabel'),
         ];
@@ -114,8 +115,8 @@ class PluginWhitelabelConfig extends CommonDBTM {
                 'name' => $name,
                 'type' => 'color',
                 'value' => $colors[$name],
-                'col_lg' => 3,
-                'col_md' => 4,
+                'col_lg' => 6,
+                'col_md' => 6,
             ];
         }
         renderTwigForm($form);
