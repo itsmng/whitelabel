@@ -48,7 +48,8 @@ class PluginWhitelabelBrand extends CommonDBTM {
 
     const FILES_DEFAULT = [
         'favicon' => '',
-        'logo_file' => '',
+        'logo_login' => '',
+        'logo_homepage' => '',
         'css_configuration' => '',
     ];
 
@@ -70,10 +71,10 @@ class PluginWhitelabelBrand extends CommonDBTM {
                   isset($input['_blank_' . $k]) ||
                   (isset($input[$k]) && $input[$k] == ''))
             ) {
-            $filepath = GLPI_ROOT . $this->fields[$k];
-            if (file_exists($filepath) && is_file($filepath)) {
-                unlink($filepath);
-            }
+                $filepath = GLPI_ROOT . $this->fields[$k];
+                if (file_exists($filepath) && is_file($filepath)) {
+                    unlink($filepath);
+                }
                 $delete = true;
                 if ($k == 'favicon') {
                     $bakFile = Plugin::getPhpDir('whitelabel') . '/bak/favicon.ico.bak';
@@ -81,10 +82,23 @@ class PluginWhitelabelBrand extends CommonDBTM {
                         copy($bakFile, GLPI_ROOT . '/pics/favicon.ico');
                     }
                 }
-           }
+            }
         
             if (isset($input[$k]) && $input[$k] != '') {
-                $input[$k] = json_decode(stripslashes($input[$k]), true)[0];
+                $decoded = json_decode(stripslashes($input[$k]), true);
+                if (!is_array($decoded) || empty($decoded)) {
+                     unset($input[$k]);
+                     continue;
+                }
+
+                $file_info = isset($decoded[0]) ? $decoded[0] : $decoded;
+
+                if (!isset($file_info['path']) || !isset($file_info['name'])) {
+                     unset($input[$k]);
+                     continue;
+                }
+
+                $input[$k] = $file_info;
 
                 $uploadedPath = ItsmngUploadHandler::uploadFile(
                     $input[$k]['path'], 
@@ -103,8 +117,12 @@ class PluginWhitelabelBrand extends CommonDBTM {
                     copy($fullPath, GLPI_ROOT . '/pics/favicon.ico');
                 }
             
-                if ($k == 'logo_file' && file_exists($fullPath)) {
+                if ($k == 'logo_login' && file_exists($fullPath)) {
                     copy($fullPath, GLPI_ROOT . '/pics/login_logo_whitelabel.png');
+                }
+                
+                if ($k == 'logo_homepage' && file_exists($fullPath)) {
+                    copy($fullPath, GLPI_ROOT . '/pics/homepage_logo_whitelabel.png');
                 }
             } else if ($delete) {
                 $input[$k] = '';
@@ -168,38 +186,43 @@ class PluginWhitelabelBrand extends CommonDBTM {
         $files = $this->getFiles();
         foreach ($files as $k => $v) {
             if ($v != '') {
-                $content .= "  --" . str_replace('_', '-', $k) . ": url('"
-                    . $CFG_GLPI['root_doc'] . $v . "');\n";
+                $cssVar = str_replace('_', '-', $k);
+                $fullUrl = $CFG_GLPI['root_doc'] . $v;
+                $content .= "  --" . $cssVar . ": url('" . $fullUrl . "');\n";
+            
+                if ($k == 'logo_file') {
+                    $content .= "  --logo-file-homepage: url('" . $fullUrl . "');\n";
+                }
             }
         }
         $content .= "}\n\n";
-        
+    
         $content .= "/* Styles pour le texte du sous-menu */\n";
         $content .= "nav#menu .menu-content ul.sub-menu li a {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n\n";
-        
+    
         $content .= "nav#menu .menu-content ul.sub-menu li a i {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n\n";
-        
+    
         $content .= "nav#menu .menu-content ul.sub-menu li a span {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n\n";
-        
+    
         $content .= "nav#menu .menu-content ul.sub-menu li:hover a,\n";
         $content .= "nav#menu .menu-content ul.sub-menu li.active a {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n\n";
-        
+    
         $content .= ".menu-top nav#menu .menu-content ul.sub-menu li a {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n\n";
-        
+    
         $content .= ".menu-close nav#menu .menu-content ul.sub-menu li a i {\n";
         $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n";
-        
-        file_put_contents($target, $content);
+    
+        $result = file_put_contents($target, $content);
     }
 }

@@ -44,6 +44,10 @@ class PluginWhitelabelConfig extends CommonDBTM {
 
         $brand = new PluginWhitelabelBrand();
         $colors = $brand->getTheme();
+        $favicon = isset($colors['favicon']) ? $colors['favicon'] : '';
+        $logo_login = isset($colors['logo_login']) ? $colors['logo_login'] : '';
+        $logo_homepage = isset($colors['logo_homepage']) ? $colors['logo_homepage'] : '';
+        
         $field_labels = [
             'primary' => __('Primary Color', 'whitelabel'),
             'secondary' => __('Secondary Color', 'whitelabel'),
@@ -87,17 +91,25 @@ class PluginWhitelabelConfig extends CommonDBTM {
                             'id' => 'FavoriteIconFilePicker',
                             'name' => 'favicon',
                             'type' => 'imageUpload',
-                            'value' => $colors['favicon'],
+                            'value' => $favicon,
                             'external' => true,
                             'accept' => '.ico',
                         ],
-                        sprintf(__('Logo (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
-                            'id' => 'LogoFilePicker',
-                            'name' => 'logo_file',
+                        sprintf(__('Logo Login Page (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
+                            'id' => 'LogoLoginFilePicker',
+                            'name' => 'logo_login',
                             'type' => 'imageUpload',
-                            'value' => $colors['logo_file'],
+                            'value' => $logo_login,
                             'external' => true,
-                            'accept' => '.png',
+                            'accept' => '.png,.jpg,.jpeg,.svg',
+                        ],
+                        sprintf(__('Logo Homepage (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
+                            'id' => 'LogoHomepageFilePicker',
+                            'name' => 'logo_homepage',
+                            'type' => 'imageUpload',
+                            'value' => $logo_homepage,
+                            'external' => true,
+                            'accept' => '.png,.jpg,.jpeg,.svg',
                         ],
                         sprintf(__('Import your CSS configuration (%s)', 'whitelabel'), Document::getMaxUploadSize()) => [
                             'id' => 'CssFilePicker',

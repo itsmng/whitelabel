@@ -91,3 +91,11 @@ msgstr "Logo (%s)"
 #: inc/config.class.php
 msgid "Import your CSS configuration (%s)"
 msgstr "Importez votre configuration CSS (%s)"
+
+#: inc/config.class.php
+msgid "Logo Login Page (%s)"
+msgstr "Logo Page de connexion (%s)"
+
+#: inc/config.class.php
+msgid "Logo Homepage (%s)"
+msgstr "Logo Page d'accueil (%s)"

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('PLUGIN_WHITELABEL_VERSION', '3.0.1');
+define('PLUGIN_WHITELABEL_VERSION', '3.0.2');
 
 function plugin_init_whitelabel() {
     global $PLUGIN_HOOKS;
@@ -53,7 +53,7 @@ function plugin_init_whitelabel() {
 function plugin_version_whitelabel() {
     return array(
         'name'           => "White Label",
-        'version'        => '3.0.1',
+        'version'        => '3.0.2',
         'author'         => 'ITSM Dev Team, Théodore Clément, Airoine',
         'license'        => 'GPLv3+',
         'homepage'       => 'https://github.com/itsmng/whitelabel',

@@ -51,7 +51,8 @@ class PluginWhitelabelInstall {
                 id int(11) NOT NULL AUTO_INCREMENT,
                 version varchar(255) NOT NULL DEFAULT '" . PLUGIN_WHITELABEL_VERSION . "',
                 favicon varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$default_files['favicon']."',
-                logo_file varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$default_files['logo_file']."',
+                logo_login varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$default_files['logo_login']."',
+                logo_homepage varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$default_files['logo_homepage']."',
                 css_configuration varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$default_files['css_configuration']."',";
             foreach ($default_colors as $k => $v){
                 $query .= "`".$k."` varchar(7) COLLATE utf8_unicode_ci NOT NULL DEFAULT '".$v."',";
@@ -257,6 +258,25 @@ class PluginWhitelabelInstall {
                         . "` SET `version` = '3.0.1' WHERE `id` = 1");
                     $migration->executeMigration();
                 }
+                break;
+
+            case '3.0.2':
+                if (!$DB->fieldExists($table, 'logo_login')) {
+                    $DB->queryOrDie("ALTER TABLE `" . $table . "` ADD COLUMN `logo_login` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `favicon`");
+                }
+                if (!$DB->fieldExists($table, 'logo_homepage')) {
+                    $DB->queryOrDie("ALTER TABLE `" . $table . "` ADD COLUMN `logo_homepage` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' AFTER `logo_login`");
+                }
+
+                if ($DB->fieldExists($table, 'logo_file')) {
+                    $DB->queryOrDie("UPDATE `" . $table . "` SET `logo_login` = `logo_file` WHERE `logo_file` IS NOT NULL AND `logo_file` != ''");
+                    $DB->queryOrDie("UPDATE `" . $table . "` SET `logo_homepage` = `logo_file` WHERE `logo_file` IS NOT NULL AND `logo_file` != ''");
+                    
+                    $migration->dropField($table, 'logo_file');
+                }
+
+                $DB->queryOrDie("UPDATE `" . $table . "` SET `version` = '3.0.2' WHERE `id` = 1");
+                $migration->executeMigration();
                 break;
         }
         return true;
