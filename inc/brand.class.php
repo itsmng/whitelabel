@@ -140,7 +140,7 @@ class PluginWhitelabelBrand extends CommonDBTM {
         if (isset($this->fields['version'])) {
             return $this->fields['version'];
         }
-        return '2.2.0';
+        return '3.0.2';
     }
 
     private function getColors($default = false) {
