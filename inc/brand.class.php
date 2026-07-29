@@ -42,7 +42,7 @@ class PluginWhitelabelBrand extends CommonDBTM {
         'nav_text' => '#ffffff',
         'nav_submenu' => '#0b0624',
         'nav_submenu_text' => '#ffffff',
-        'nav_hover' => '#ffffff',
+        'nav_hover' => '#0e2045',
         'favorite' => '#ffff00',
     ];
 
