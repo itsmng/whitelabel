@@ -1,10 +1,10 @@
 # ITSM Whitelabel
 
-**Version 3.1.0 — ITSM Dev Team, Théodore Clément, Airoine, HOP!**
+**Version 3.1.0 - ITSM Dev Team, Théodore Clément, Airoine, HOP!**
 
 ## Changelog
 
-- **3.1.0** — White Label Themes. A theme bundles the 12 colors and a
+- **3.1.0** - White Label Themes. A theme bundles the 12 colors and a
   custom CSS as one unit; a Super-Admin creates, edits, activates and
   deletes themes and picks a default one; each user picks a theme in
   Profile → Preferences → White Label. Resolution order: user
