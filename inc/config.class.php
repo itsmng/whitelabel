@@ -43,25 +43,48 @@ class PluginWhitelabelConfig extends CommonDBTM {
         }
 
         $brand = new PluginWhitelabelBrand();
-        $colors = $brand->getTheme();
-        $favicon = isset($colors['favicon']) ? $colors['favicon'] : '';
-        $logo_login = isset($colors['logo_login']) ? $colors['logo_login'] : '';
-        $logo_homepage = isset($colors['logo_homepage']) ? $colors['logo_homepage'] : '';
-        
-        $field_labels = [
-            'primary' => __('Primary Color', 'whitelabel'),
-            'secondary' => __('Secondary Color', 'whitelabel'),
-            'primary_text' => __('Primary Text Color', 'whitelabel'),
-            'secondary_text' => __('Secondary Text Color', 'whitelabel'),
-            'header' => __('Header Background Color', 'whitelabel'),
-            'header_text' => __('Header Text Color', 'whitelabel'),
-            'nav' => __('Nav Background Color', 'whitelabel'),
-            'nav_text' => __('Nav Text Color', 'whitelabel'),
-            'nav_submenu' => __('Nav Submenu Color', 'whitelabel'),
-            'nav_submenu_text' => __('Nav Submenu Text Color', 'whitelabel'),
-            'nav_hover' => __('Nav Hover Color', 'whitelabel'),
-            'favorite' => __('Favorite Color', 'whitelabel'),
+        $brandFiles = $brand->getTheme();
+        $favicon = isset($brandFiles['favicon']) ? $brandFiles['favicon'] : '';
+        $logo_login = isset($brandFiles['logo_login']) ? $brandFiles['logo_login'] : '';
+        $logo_homepage = isset($brandFiles['logo_homepage']) ? $brandFiles['logo_homepage'] : '';
+
+        echo "<div class='center mb-3'>";
+        echo "<a class='btn btn-outline-secondary' href='" . Plugin::getWebDir("whitelabel") . "/front/theme.php'>";
+        echo "<i class='fas fa-palette'></i>&nbsp;" . __('Manage White Label Themes', 'whitelabel');
+        echo "</a>";
+        echo "</div>";
+
+        $defaultThemeId = isset($brand->fields['default_theme_id']) ? (int) $brand->fields['default_theme_id'] : 0;
+        $themeValues = [0 => __('None (built-in default look)', 'whitelabel')] + PluginWhitelabelTheme::getActiveThemes();
+
+        $defaultThemeForm = [
+            'action'  => Plugin::getWebDir("whitelabel")."/front/config.form.php",
+            'buttons' => [
+                [
+                    'name' => 'update_default_theme',
+                    'type' => 'submit',
+                    'value' => __('Save'),
+                    'class' => 'btn btn-secondary'
+                ],
+            ],
+            'content' => [
+                __('White Label Themes', 'whitelabel') => [
+                    'visible' => true,
+                    'inputs' => [
+                        __('Default theme', 'whitelabel') => [
+                            'name'   => 'default_theme_id',
+                            'type'   => 'select',
+                            'values' => $themeValues,
+                            'value'  => $defaultThemeId,
+                            'col_lg' => 6,
+                            'col_md' => 6,
+                        ],
+                    ],
+                ],
+            ],
         ];
+        renderTwigForm($defaultThemeForm, '', ['noEntity' => true]);
+        echo "<hr>";
 
         $form = [
             'action' => Plugin::getWebDir("whitelabel")."/front/config.form.php",
@@ -72,18 +95,8 @@ class PluginWhitelabelConfig extends CommonDBTM {
                     'value' => __('Save'),
                     'class' => 'btn btn-secondary'
                 ],
-                [
-                    'name' => 'reset',
-                    'type' => 'submit',
-                    'value' => __('Reset'),
-                    'class' => 'btn btn-secondary'
-                ]
             ],
             'content' => [
-                __('Colors', 'whitelabel') => [
-                    'visible' => true,
-                    'inputs' => []
-                ],
                 __('Files', 'whitelabel') => [
                     'visible' => true,
                     'inputs' => [
@@ -122,15 +135,6 @@ class PluginWhitelabelConfig extends CommonDBTM {
                 ]
             ]
         ];
-        foreach ($field_labels as $name => $title) {
-            $form['content'][__('Colors', 'whitelabel')]['inputs'][$title] = [
-                'name' => $name,
-                'type' => 'color',
-                'value' => $colors[$name],
-                'col_lg' => 6,
-                'col_md' => 6,
-            ];
-        }
         renderTwigForm($form);
     }
 }

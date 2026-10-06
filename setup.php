@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('PLUGIN_WHITELABEL_VERSION', '3.0.3');
+define('PLUGIN_WHITELABEL_VERSION', '3.1.0');
 
 function plugin_init_whitelabel() {
     global $PLUGIN_HOOKS;
@@ -40,21 +40,43 @@ function plugin_init_whitelabel() {
 
     Plugin::registerClass('PluginWhitelabelProfile', array('addtabon' => array('Profile')));
 
+    // Adds the "White Label Theme" tab under Profile > Preferences,
+    // letting each user pick their own Theme (palette + CSS bundled
+    // together - see PluginWhitelabelPreference / PluginWhitelabelTheme).
+    Plugin::registerClass('PluginWhitelabelPreference', array('addtabon' => array('Preference')));
+
     if (Session::haveRight("profile", UPDATE)) {
         $PLUGIN_HOOKS['config_page']['whitelabel'] = 'front/config.form.php';
     }
 
-    $PLUGIN_HOOKS['add_css']['whitelabel'] = [
-        "uploads/whitelabel.css",
-        "uploads/css_configuration.css",
-    ];
+    // Resolve, for the current request, which CSS applies:
+    //   - the current user's chosen Theme, if any and active
+    //   - otherwise the plugin-wide default Theme, if any and active
+    //   - otherwise the legacy global whitelabel.css (pre-Themes installs)
+    // This runs on every request (plugin_init executes after the session
+    // is loaded), so the resolution is always up to date.
+    $cssHooks = ["uploads/whitelabel.css"];
+    if (class_exists('PluginWhitelabelResolver')) {
+        try {
+            $cssHooks = PluginWhitelabelResolver::getCssHooks();
+        } catch (\Throwable $e) {
+            // Never let theme resolution break page rendering (e.g. right
+            // after upgrading, before the DB migration has been run):
+            // silently fall back to the legacy stylesheet.
+            $cssHooks = ["uploads/whitelabel.css"];
+        }
+    }
+    $PLUGIN_HOOKS['add_css']['whitelabel'] = array_merge(
+        $cssHooks,
+        ["uploads/css_configuration.css"]
+    );
 }
 
 function plugin_version_whitelabel() {
     return array(
         'name'           => "White Label",
-        'version'        => '3.0.3',
-        'author'         => 'ITSM Dev Team, Théodore Clément, Airoine',
+        'version'        => PLUGIN_WHITELABEL_VERSION,
+        'author'         => 'ITSM Dev Team, Théodore Clément, Airoine, HOP!',
         'license'        => 'GPLv3+',
         'homepage'       => 'https://github.com/itsmng/whitelabel',
         'minGlpiVersion' => '9.5'
