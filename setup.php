@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('PLUGIN_WHITELABEL_VERSION', '3.0.3');
+define('PLUGIN_WHITELABEL_VERSION', '3.0.4');
 
 function plugin_init_whitelabel() {
     global $PLUGIN_HOOKS;
