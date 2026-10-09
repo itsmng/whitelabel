@@ -173,56 +173,41 @@ class PluginWhitelabelBrand extends CommonDBTM {
         return array_merge($this->getColors($default), $this->getFiles($default));
     }
 
+    /**
+     * Public wrapper so migrations can force-regenerate the fallback
+     * CSS file.
+     */
+    public function regenerateLegacyCssFile() {
+        $this->generateMainTemplate(Plugin::getPhpDir('whitelabel') . '/uploads/whitelabel.css');
+    }
+
+    /**
+     * Colors are managed EXCLUSIVELY through White Label
+     * Themes (see PluginWhitelabelTheme / PluginWhitelabelPalette).
+     * This legacy file therefore only carries the global, non-theme
+     * assets (favicon, login/homepage logos) - it is used solely as a
+     * last-resort fallback by PluginWhitelabelResolver when no White
+     * Label Theme applies at all (which should not normally happen,
+     * since a default Theme is always seeded on install/upgrade).
+     */
     private function generateMainTemplate($target) {
         global $CFG_GLPI;
 
         $content = ":root {\n";
-        $colors = $this->getColors();
-        foreach ($colors as $k => $v) {
-            if ($v != '') {
-                $content .= "  --bs-" . str_replace('_', '-', $k) . ": " . $v . ";\n";
-            }
-        }
         $files = $this->getFiles();
         foreach ($files as $k => $v) {
             if ($v != '') {
                 $cssVar = str_replace('_', '-', $k);
                 $fullUrl = $CFG_GLPI['root_doc'] . $v;
                 $content .= "  --" . $cssVar . ": url('" . $fullUrl . "');\n";
-            
+
                 if ($k == 'logo_file') {
                     $content .= "  --logo-file-homepage: url('" . $fullUrl . "');\n";
                 }
             }
         }
-        $content .= "}\n\n";
-    
-        $content .= "/* Styles pour le texte du sous-menu */\n";
-        $content .= "nav#menu .menu-content ul.sub-menu li a {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
-        $content .= "}\n\n";
-    
-        $content .= "nav#menu .menu-content ul.sub-menu li a i {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
-        $content .= "}\n\n";
-    
-        $content .= "nav#menu .menu-content ul.sub-menu li a span {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
-        $content .= "}\n\n";
-    
-        $content .= "nav#menu .menu-content ul.sub-menu li:hover a,\n";
-        $content .= "nav#menu .menu-content ul.sub-menu li.active a {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
-        $content .= "}\n\n";
-    
-        $content .= ".menu-top nav#menu .menu-content ul.sub-menu li a {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
-        $content .= "}\n\n";
-    
-        $content .= ".menu-close nav#menu .menu-content ul.sub-menu li a i {\n";
-        $content .= "    color: var(--bs-nav-submenu-text) !important;\n";
         $content .= "}\n";
-    
+
         $result = file_put_contents($target, $content);
     }
 }

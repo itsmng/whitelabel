@@ -44,11 +44,15 @@ if($plugin->isActivated("whitelabel")) {
         Session::addMessageAfterRedirect(__('<p><b>Settings applied !</b></p><p><i>If you have any error, do the command in the ITSM-NG installation folder : <b>bin/console system:clear_cache</b></i></p>', 'whitelabel'));
     }
 
-    if(isset($_POST["reset"])) {
+    if(isset($_POST["update_default_theme"])) {
         Session::checkRight("config", UPDATE);
-        $defaultValues = $brand::COLORS_DEFAULT + ['id' => 1];
-        $brand->update($defaultValues);
-        Session::addMessageAfterRedirect(__('<p><b>Default settings applied !</b></p><p><i>If you have any error, do the command in the ITSM-NG installation folder : <b>bin/console system:clear_cache</b></i></p>', 'whitelabel'));
+        $theme_id = (int) ($_POST['default_theme_id'] ?? 0);
+        if ($theme_id > 0) {
+            PluginWhitelabelTheme::setAsDefault($theme_id);
+        } else {
+            $brand->update(['id' => 1, 'default_theme_id' => 0]);
+        }
+        Session::addMessageAfterRedirect(__('Default theme updated.', 'whitelabel'));
     }
 
     Html::header("WhiteLabel", $_SERVER["PHP_SELF"], "config", Plugin::class);

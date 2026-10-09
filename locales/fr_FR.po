@@ -99,3 +99,73 @@ msgstr "Logo Page de connexion (%s)"
 #: inc/config.class.php
 msgid "Logo Homepage (%s)"
 msgstr "Logo Page d'accueil (%s)"
+
+msgid "Manage White Label Themes"
+msgstr "Gérer les thèmes White Label"
+
+msgid "Default theme"
+msgstr "Thème par défaut"
+
+msgid "White Label Theme"
+msgstr "Thème White Label"
+
+msgid "White Label Themes"
+msgstr "Thèmes White Label"
+
+msgid "None (built-in default look)"
+msgstr "Aucun (apparence par défaut intégrée)"
+
+msgid "Load a preset"
+msgstr "Charger un preset"
+
+msgid "Active"
+msgstr "Actif"
+
+msgid "Set as default theme"
+msgstr "Définir comme thème par défaut"
+
+msgid "Custom CSS"
+msgstr "CSS personnalisé"
+
+msgid "Custom CSS for this theme (%s)"
+msgstr "CSS personnalisé pour ce thème (%s)"
+
+msgid "Add a theme"
+msgstr "Ajouter un thème"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Reset this theme's colors to the defaults?"
+msgstr "Réinitialiser les couleurs de ce thème aux valeurs par défaut ?"
+
+msgid "Delete permanently"
+msgstr "Supprimer définitivement"
+
+msgid "Delete this theme? Users on it will fall back to the default theme."
+msgstr "Supprimer ce thème ? Les utilisateurs qui l'utilisent basculeront vers le thème par défaut."
+
+msgid "Theme colors reset to the defaults."
+msgstr "Couleurs du thème réinitialisées aux valeurs par défaut."
+
+msgid "Default theme updated."
+msgstr "Thème par défaut mis à jour."
+
+msgid "White Label"
+msgstr "White Label"
+
+msgid "White Label user preference"
+msgstr "Préférence White Label de l'utilisateur"
+
+msgid "White Label theme preference saved."
+msgstr "Préférence de thème White Label enregistrée."
+
+msgid "Use the default theme"
+msgstr "Utiliser le thème par défaut"
+
+msgid "Use the default theme (%s)"
+msgstr "Utiliser le thème par défaut (%s)"
+
+msgid "Settings"
+msgstr "Paramètres"
+
