@@ -2,6 +2,23 @@
 
 
 class PluginWhitelabelProfile extends CommonDBTM {
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if ($item instanceof Profile && Session::haveRight('profile', READ)) {
+         return self::createTabEntry('White Label');
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      if (!($item instanceof Profile) || !Session::haveRight('profile', READ)) {
+         return false;
+      }
+
+      $profile = new self();
+      $profile->showForm($item->getID());
+      return true;
+   }
       
    static function canCreate() {
       if (isset($_SESSION['profile'])) {
